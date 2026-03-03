@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Session Management - Frontend
 
-## Getting Started
+A clean, modular, and professional session management dashboard built with Next.js.
 
-First, run the development server:
+## 🚀 Key Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Unified Control Dashboard**: Manage operational modules and monitor activity logs in a single view.
+- **Professional Paper Aesthetic**: Minimalist design with high-quality typography and subtle shadows.
+- **Smart Tracking Flow**:
+  - **Conditional Linking**: Redundant tracking sessions are avoided by checking existing logs.
+  - **URL Sanitization**: Tracking query parameters are automatically stripped from the URL after activation.
+- **Modular Architecture**: Built with reusable sub-components (`DashboardSection`, `ContentGrid`, `ActivityLogTable`).
+- **Standardized Iconography**: Powered by `react-icons`.
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js 15 (App Router)](https://nextjs.org/)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
+- **Components**: [Shadcn UI](https://ui.shadcn.com/)
+- **Icons**: React Icons (`hi2`, `md`)
+
+## 🏁 Getting Started
+
+### 1. Environment Configuration
+
+Ensure you have a `.env.local` file with the following:
+
+```env
+NEXT_PUBLIC_BACKEND_URL=http://localhost:4000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Local Development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000) to view the dashboard.
 
-## Learn More
+## 📂 Project Structure
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/app/page.tsx`: Unified Control Dashboard.
+- `src/app/content/[id]/page.tsx`: Professional document view for specific operational units.
+- `src/components/dashboard/`: Modular dashboard sub-components.
+- `src/components/ui/`: Reusable primitive components (Shadcn).
