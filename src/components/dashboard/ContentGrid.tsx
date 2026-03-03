@@ -1,11 +1,14 @@
-import React from "react";
-import Link from "next/link";
+"use client";
+
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useSession } from "@/context";
+import Link from "next/link";
+import React from "react";
 import { HiArrowRight } from "react-icons/hi2";
 
 interface Content {
@@ -17,14 +20,11 @@ interface Content {
 interface ContentGridProps {
   contents: Content[];
   loading: boolean;
-  trackedIds: string[];
 }
 
-const ContentGrid: React.FC<ContentGridProps> = ({
-  contents,
-  loading,
-  trackedIds,
-}) => {
+const ContentGrid: React.FC<ContentGridProps> = ({ contents, loading }) => {
+  const { isActivated } = useSession();
+
   if (loading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -53,7 +53,7 @@ const ContentGrid: React.FC<ContentGridProps> = ({
       {contents.slice(0, 4).map((item) => (
         <Link
           key={item.id}
-          href={`/content/${item.id}${trackedIds.includes(item.id) ? "" : "?activateSession=true"}`}
+          href={`/content/${item.id}${isActivated(item.id) ? "" : "?activateSession=true"}`}
           className="group"
         >
           <Card className="h-full border-zinc-100 rounded-2xl shadow-sm hover:shadow-xl hover:shadow-zinc-200/50 transition-all duration-500 bg-white overflow-hidden group-hover:border-black group-hover:translate-y-[-4px]">

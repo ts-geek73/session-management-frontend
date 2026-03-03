@@ -77,11 +77,7 @@ const HomePage: React.FC = () => {
       </header>
 
       <DashboardSection title="Operational Modules">
-        <ContentGrid
-          contents={contents}
-          loading={loading}
-          trackedIds={sessions.map((s) => s.content_id)}
-        />
+        <ContentGrid contents={contents} loading={loading} />
       </DashboardSection>
 
       <DashboardSection title="Activity Log" badgeCount={sessions.length}>

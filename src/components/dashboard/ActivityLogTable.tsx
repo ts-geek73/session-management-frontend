@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useSession } from "@/context";
 import Link from "next/link";
 import React from "react";
 import { MdModeEdit } from "react-icons/md";
@@ -23,6 +24,8 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({
   sessions,
   loading,
 }) => {
+  const { isActivated } = useSession();
+
   return (
     <div className="bg-white border border-zinc-100 rounded-3xl overflow-hidden shadow-sm">
       <div className="overflow-x-auto">
@@ -69,7 +72,9 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({
                   className="group w-full [&_td]:p-3 hover:bg-zinc-50/50 transition-colors"
                 >
                   <td>
-                    <Link href={`/content/${session.content_id}`}>
+                    <Link
+                      href={`/content/${session?.content_id}${isActivated(session?.content_id) ? "" : "?activateSession=true"}`}
+                    >
                       <span className="text-sm font-bold text-black group-hover:underline underline-offset-4">
                         {session.contents?.title || "Unknown"}
                       </span>
