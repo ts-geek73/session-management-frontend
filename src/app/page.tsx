@@ -1,8 +1,6 @@
 "use client";
 
-import ActivityLogTable from "@/components/dashboard/ActivityLogTable";
-import ContentGrid from "@/components/dashboard/ContentGrid";
-import DashboardSection from "@/components/dashboard/DashboardSection";
+import { ActivityLogTable, ContentGrid, DashboardSection } from "@/components/dashboard";
 import { Badge } from "@/components/ui/badge";
 import { useContents, useSessionUpdates } from "@/hooks";
 
