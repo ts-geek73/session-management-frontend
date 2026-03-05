@@ -88,9 +88,9 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({
               </td>
             </tr>
           ) : (
-            sessions.map((session) => (
+            sessions.map((session, index) => (
               <tr
-                key={session.id}
+                key={session.id + index}
                 className={cn(
                   "group w-full [&_td]:p-3 hover:bg-zinc-50/50 transition-colors",
                   newSessionIds.has(session.id) && "animate-row-enter",
