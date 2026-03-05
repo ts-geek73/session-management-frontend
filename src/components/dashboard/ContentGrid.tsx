@@ -10,12 +10,7 @@ import { useSession } from "@/context";
 import Link from "next/link";
 import React from "react";
 import { HiArrowRight } from "react-icons/hi2";
-
-interface Content {
-  id: string;
-  title: string;
-  content: string | null;
-}
+import { Content } from "@/types";
 
 interface ContentGridProps {
   contents: Content[];

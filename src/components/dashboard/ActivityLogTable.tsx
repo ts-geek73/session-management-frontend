@@ -4,16 +4,7 @@ import { useSession } from "@/context";
 import Link from "next/link";
 import React from "react";
 import { MdModeEdit } from "react-icons/md";
-
-interface TrackedSession {
-  id: string;
-  content_id: string;
-  created_at: string;
-  status: string;
-  contents: {
-    title: string;
-  };
-}
+import { TrackedSession } from "@/types";
 
 interface ActivityLogTableProps {
   sessions: TrackedSession[];

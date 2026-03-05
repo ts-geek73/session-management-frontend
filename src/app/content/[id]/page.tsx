@@ -1,85 +1,29 @@
 "use client";
 
+import { useContentDetail } from "@/hooks";
 import Link from "next/link";
 import { notFound, useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import { HiArrowLeft } from "react-icons/hi2";
-
-interface Content {
-  id: string;
-  title: string;
-  content: string | null;
-  created_at: string;
-}
 
 interface SessionPageProps {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-const trackVisit = async (contentId: string) => {
-  try {
-    const backendUrl =
-      process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:4000";
-    const response = await fetch(`${backendUrl}/api/sessions/track`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        content_id: contentId,
-        status: "active",
-      }),
-    });
-
-    if (response.ok) {
-      console.log("✅ Activity logged to sessions table");
-    }
-  } catch (error) {
-    console.error("❌ Error tracking session visit:", error);
-  }
-};
-
 const SessionPage: React.FC<SessionPageProps> = ({ params, searchParams }) => {
   const router = useRouter();
-  const [content, setContent] = useState<Content | null>(null);
-  const [loading, setLoading] = useState(true);
-
   const { id } = React.use(params);
   const { activateSession } = React.use(searchParams);
   const shouldActivate = activateSession === "true";
-  const hasTracked = useRef(false);
+
+  const { content, loading } = useContentDetail(id, shouldActivate);
 
   useEffect(() => {
-    const fetchContent = async () => {
-      const backendUrl =
-        process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:4000";
-      try {
-        const res = await fetch(`${backendUrl}/api/contents/${id}`, {
-          cache: "no-store",
-        });
-        if (!res.ok) {
-          setLoading(false);
-          return;
-        }
-        const json = await res.json();
-        if (json.success) {
-          setContent(json.data);
-          if (shouldActivate && !hasTracked.current) {
-            hasTracked.current = true;
-            await trackVisit(json.data.id);
-            // Clean up the URL after tracking
-            router.replace(`/content/${json.data.id}`);
-          }
-        }
-      } catch (err) {
-        console.error("Failed to fetch content:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchContent();
-  }, [id, shouldActivate, router]);
+    if (content && shouldActivate) {
+      router.replace(`/content/${content.id}`);
+    }
+  }, [content, shouldActivate, router]);
 
   if (loading) {
     return (

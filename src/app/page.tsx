@@ -4,56 +4,13 @@ import ActivityLogTable from "@/components/dashboard/ActivityLogTable";
 import ContentGrid from "@/components/dashboard/ContentGrid";
 import DashboardSection from "@/components/dashboard/DashboardSection";
 import { Badge } from "@/components/ui/badge";
-import { useEffect, useState } from "react";
-
-interface Content {
-  id: string;
-  title: string;
-  content: string | null;
-  created_at: string;
-}
-
-interface TrackedSession {
-  id: string;
-  content_id: string;
-  created_at: string;
-  status: string;
-  contents: {
-    title: string;
-  };
-}
+import { useContents, useSessionUpdates } from "@/hooks";
 
 const HomePage: React.FC = () => {
-  const [contents, setContents] = useState<Content[]>([]);
-  const [sessions, setSessions] = useState<TrackedSession[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { contents, loading: contentsLoading } = useContents();
+  const { sessions, loading: sessionsLoading } = useSessionUpdates();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const backendUrl =
-        process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:4000";
-      try {
-        const [contentsRes, sessionsRes] = await Promise.all([
-          fetch(`${backendUrl}/api/contents`, { cache: "no-store" }),
-          fetch(`${backendUrl}/api/sessions`, { cache: "no-store" }),
-        ]);
-
-        const [contentsJson, sessionsJson] = await Promise.all([
-          contentsRes.json(),
-          sessionsRes.json(),
-        ]);
-
-        if (contentsJson.success) setContents(contentsJson.data);
-        if (sessionsJson.success) setSessions(sessionsJson.data);
-      } catch (err) {
-        console.error("Failed to fetch dashboard data:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const totalLoading = contentsLoading || sessionsLoading;
 
   return (
     <div className="max-w-5xl w-full [&>*]:py-8 divide-y divide-zinc-200">
@@ -77,11 +34,11 @@ const HomePage: React.FC = () => {
       </header>
 
       <DashboardSection title="Operational Modules">
-        <ContentGrid contents={contents} loading={loading} />
+        <ContentGrid contents={contents} loading={totalLoading} />
       </DashboardSection>
 
       <DashboardSection title="Activity Log" badgeCount={sessions.length}>
-        <ActivityLogTable sessions={sessions} loading={loading} />
+        <ActivityLogTable sessions={sessions} loading={totalLoading} />
       </DashboardSection>
     </div>
   );
