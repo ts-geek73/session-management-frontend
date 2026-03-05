@@ -50,11 +50,11 @@ export const useContents = () => {
   }, [fetchContents]);
 
   const handleContentClick = async (contentId: string) => {
-    const existingSessionId = getSessionByContentId(contentId);
-    if (existingSessionId) {
-      router.push(`/session/${existingSessionId}`);
-      return;
-    }
+    // const existingSessionId = getSessionByContentId(contentId);
+    // if (existingSessionId) {
+    //   router.push(`/session/${existingSessionId}`);
+    //   return;
+    // }
     const session = await trackVisit(contentId, activate);
     if (session?.id) {
       await router.push(`/session/${session?.id}`);
