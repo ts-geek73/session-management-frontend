@@ -10,7 +10,5 @@ export interface TrackedSession {
   content_id: string;
   created_at: string;
   status: string;
-  contents: {
-    title: string;
-  };
+  contents: Content;
 }

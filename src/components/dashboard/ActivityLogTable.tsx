@@ -97,7 +97,7 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({
               >
                 <td>
                   <Link
-                    href={`/content/${session?.content_id}${isActivated(session?.content_id) ? "" : "?activateSession=true"}`}
+                    href={`/session/${session?.id}`}
                   >
                     <span className="text-sm font-bold text-black hover:underline underline-offset-4 cursor-pointer">
                       {session.contents?.title || "Unknown"}

@@ -1,11 +1,34 @@
-import { useEffect, useState, useCallback } from "react";
+import { useSession } from "@/context";
 import api from "@/lib/api";
-import { Content } from "@/types";
+import { Content, TrackedSession } from "@/types";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 
+export const trackVisit = async (
+  contentId: string,
+  activate: (contentId: string) => void,
+): Promise<TrackedSession | null> => {
+  try {
+    const { data } = await api.post("/sessions/track", {
+      content_id: contentId,
+      status: "active",
+    });
+    console.log("✅ Activity logged to sessions table");
+    if (data.success) {
+      activate(data?.data?.id);
+    }
+    return data?.data;
+  } catch (err) {
+    console.error("❌ Error tracking session visit:", err);
+    return null;
+  }
+};
 export const useContents = () => {
   const [contents, setContents] = useState<Content[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { activate } = useSession();
+  const router = useRouter();
 
   const fetchContents = useCallback(async () => {
     setLoading(true);
@@ -26,5 +49,19 @@ export const useContents = () => {
     fetchContents();
   }, [fetchContents]);
 
-  return { contents, loading, error, refetch: fetchContents };
+  const handleContentClick = async (contentId: string) => {
+    const session = await trackVisit(contentId, activate);
+    console.log("🚀 ~ handleContentClick ~ session:", session)
+    if (session?.id) {
+      await router.push(`/session/${session?.id}`);
+    }
+  };
+
+  return {
+    contents,
+    loading,
+    error,
+    refetch: fetchContents,
+    handleContentClick,
+  };
 };

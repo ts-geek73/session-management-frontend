@@ -1,7 +1,9 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useSession } from "@/context";
 import api from "@/lib/api";
 import { Content } from "@/types";
-import { useSession } from "@/context";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { trackVisit } from "./useContents";
+
 
 export const useContentDetail = (
   id: string,
@@ -13,23 +15,6 @@ export const useContentDetail = (
   const { activate } = useSession();
   const hasTracked = useRef(false);
 
-  const trackVisit = useCallback(
-    async (contentId: string) => {
-      try {
-        await api.post("/sessions/track", {
-          content_id: contentId,
-          status: "active",
-        });
-        console.log("✅ Activity logged to sessions table");
-        // Update local storage via context
-        activate(contentId);
-      } catch (err) {
-        console.error("❌ Error tracking session visit:", err);
-      }
-    },
-    [activate],
-  );
-
   const fetchContent = useCallback(async () => {
     if (!id) return;
     setLoading(true);
@@ -39,11 +24,10 @@ export const useContentDetail = (
         setContent(data.data);
         if (shouldActivate && !hasTracked.current) {
           hasTracked.current = true;
-          await trackVisit(data.data.id);
+          await trackVisit(data.data.id, activate);
         }
       }
     } catch (err: any) {
-      console.error("Failed to fetch content:", err);
       setError(err.message || "Failed to fetch content");
     } finally {
       setLoading(false);

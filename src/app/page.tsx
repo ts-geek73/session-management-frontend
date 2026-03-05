@@ -1,11 +1,19 @@
 "use client";
 
-import { ActivityLogTable, ContentGrid, DashboardSection } from "@/components/dashboard";
+import {
+  ActivityLogTable,
+  ContentGrid,
+  DashboardSection,
+} from "@/components/dashboard";
 import { Badge } from "@/components/ui/badge";
 import { useContents, useSessionUpdates } from "@/hooks";
 
 const HomePage: React.FC = () => {
-  const { contents, loading: contentsLoading } = useContents();
+  const {
+    contents,
+    loading: contentsLoading,
+    handleContentClick,
+  } = useContents();
   const {
     sessions,
     loading: sessionsLoading,
@@ -38,7 +46,11 @@ const HomePage: React.FC = () => {
       </header>
 
       <DashboardSection title="Operational Modules">
-        <ContentGrid contents={contents} loading={totalLoading} />
+        <ContentGrid
+          contents={contents}
+          loading={totalLoading}
+          onClick={handleContentClick}
+        />
       </DashboardSection>
 
       <DashboardSection title="Activity Log" badgeCount={sessions.length}>
