@@ -2,10 +2,15 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 
+interface ActivatedSession {
+  sessionId: string;
+  contentId: string;
+}
+
 interface SessionContextType {
-  activatedIds: string[];
-  activate: (id: string) => void;
-  isActivated: (id: string) => boolean;
+  activatedSessions: ActivatedSession[];
+  activate: (sessionId: string, contentId: string) => void;
+  getSessionByContentId: (contentId: string) => string | undefined;
 }
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
@@ -13,32 +18,42 @@ const SessionContext = createContext<SessionContextType | undefined>(undefined);
 export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [activatedIds, setActivatedIds] = useState<string[]>([]);
+  const [activatedSessions, setActivatedSessions] = useState<
+    ActivatedSession[]
+  >([]);
 
   useEffect(() => {
     const stored = localStorage.getItem("activatedSessions");
     if (stored) {
       try {
-        setActivatedIds(JSON.parse(stored));
+        setActivatedSessions(JSON.parse(stored));
       } catch (e) {
         console.error("Failed to parse activated sessions:", e);
       }
     }
   }, []);
 
-  const activate = (id: string) => {
-    setActivatedIds((prev) => {
-      if (prev.includes(id)) return prev;
-      const next = [...prev, id];
+  const activate = (sessionId: string, contentId: string) => {
+    setActivatedSessions((prev) => {
+      if (prev.some((s) => s.sessionId === sessionId)) return prev;
+      const next = [...prev, { sessionId, contentId }];
       localStorage.setItem("activatedSessions", JSON.stringify(next));
       return next;
     });
   };
 
-  const isActivated = (id: string) => activatedIds.includes(id);
+  const getSessionByContentId = (contentId: string) => {
+    return activatedSessions.find((s) => s.contentId === contentId)?.sessionId;
+  };
 
   return (
-    <SessionContext.Provider value={{ activatedIds, activate, isActivated }}>
+    <SessionContext.Provider
+      value={{
+        activatedSessions,
+        activate,
+        getSessionByContentId,
+      }}
+    >
       {children}
     </SessionContext.Provider>
   );

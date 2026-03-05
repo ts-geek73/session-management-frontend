@@ -45,7 +45,11 @@ const SessionPage: React.FC<SessionPageProps> = ({ params }) => {
   const { id } = React.use(params);
   const router = useRouter();
   const { session, loading: sessionLoading } = useSessionDetail(id);
-  const { activatedIds } = useSession();
+  const { activatedSessions } = useSession();
+  const activatedIds = useMemo(
+    () => activatedSessions.map((s) => s.sessionId),
+    [activatedSessions],
+  );
 
   const content = session?.contents;
   const currentIndex = useMemo(() => {
@@ -54,7 +58,11 @@ const SessionPage: React.FC<SessionPageProps> = ({ params }) => {
 
   const nextId = useMemo(() => {
     if (currentIndex === -1) return null;
-    if (currentIndex + 1 >= activatedIds.length) return null;
+    if (activatedIds?.length === 1) return null;
+    if (currentIndex + 1 > activatedIds.length - 1) {
+      const temp = (currentIndex + 1) % activatedIds.length;
+      return activatedIds[temp];
+    }
 
     return activatedIds[currentIndex + 1];
   }, [currentIndex, activatedIds]);
@@ -95,7 +103,7 @@ const SessionPage: React.FC<SessionPageProps> = ({ params }) => {
         <div className="h-px bg-zinc-200 w-full" />
       </div>
 
-      <article className="space-y-8 text-lg font-normal text-[#4A4A4A] leading-[1.8] min-h-[200px]">
+      <article className="space-y-8 text-lg font-normal text-[#4A4A4A] leading-[1.8] min-h-[350px]">
         {content?.content ? (
           content?.content
             .split("\n\n")

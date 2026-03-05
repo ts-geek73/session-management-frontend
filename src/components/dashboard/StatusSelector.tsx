@@ -18,23 +18,17 @@ const statusOptions = [
     dotColor: "bg-emerald-800",
   },
   {
-    value: "reviewed",
-    label: "Reviewed",
+    value: "complete",
+    label: "Complete",
     color: "bg-blue-500",
     dotColor: "bg-blue-800",
-  },
-  {
-    value: "archived",
-    label: "Archived",
-    color: "bg-zinc-400",
-    dotColor: "bg-zinc-800",
   },
 ];
 
 interface StatusSelectorProps {
-  currentStatus: string;
+  currentStatus: "active" | "complete";
   isUpdating: boolean;
-  onUpdate: (status: string) => void;
+  onUpdate: (status: "active" | "complete") => void;
 }
 
 const StatusSelector: React.FC<StatusSelectorProps> = ({
@@ -52,7 +46,7 @@ const StatusSelector: React.FC<StatusSelectorProps> = ({
         <button
           disabled={isUpdating}
           className={cn(
-            "flex items-center h-full gap-2 px-3 py-2 rounded-full border border-zinc-200 bg-white text-xs font-bold uppercase tracking-widest transition-all outline-none",
+            "flex items-center h-full gap-2 px-3 py-2 rounded-full border border-zinc-200 bg-white text-xs font-bold uppercase tracking-widest transition-all outline-none text-white",
             activeOption.color,
             isUpdating
               ? "opacity-50 cursor-not-allowed"
@@ -60,7 +54,7 @@ const StatusSelector: React.FC<StatusSelectorProps> = ({
           )}
         >
           <span className={cn("w-2 h-2 rounded-full", activeOption.dotColor)} />
-          <span className="text-white">{activeOption.label}</span>
+          <span>{activeOption.label}</span>
           {isUpdating ? (
             <div className="w-3 h-3 border-2 border-zinc-200 border-t-zinc-800 rounded-full animate-spin" />
           ) : (
@@ -78,11 +72,12 @@ const StatusSelector: React.FC<StatusSelectorProps> = ({
             key={option.value}
             onClick={() => {
               if (option.value !== currentStatus.toLowerCase()) {
-                onUpdate(option.value);
+                onUpdate(option.value as "active" | "complete");
               }
             }}
             className={cn(
-              "flex items-center justify-between px-3 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer text-white hover:text-white",
+              "flex items-center justify-between px-3 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer",
+              "text-white hover:text-white focus:text-white/90",
               option.color,
               `hover:${option.color}`,
               `focus:${option.color}`,

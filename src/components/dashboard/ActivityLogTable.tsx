@@ -1,19 +1,21 @@
 "use client";
 
-import { useSession } from "@/context";
+import { cn } from "@/lib/utils";
 import { TrackedSession } from "@/types";
 import Link from "next/link";
 import React, { useState } from "react";
 import { MdModeEdit } from "react-icons/md";
 import { Button } from "../ui/button";
-import { cn } from "@/lib/utils";
 
 import StatusSelector from "./StatusSelector";
 
 interface ActivityLogTableProps {
   sessions: TrackedSession[];
   loading: boolean;
-  onStatusUpdate?: (id: string, status: string) => Promise<boolean>;
+  onStatusUpdate?: (
+    id: string,
+    status: "active" | "complete",
+  ) => Promise<boolean>;
   newSessionIds?: Set<string>;
   updatedSessionIds?: Set<string>;
 }
@@ -36,14 +38,14 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({
   newSessionIds = new Set(),
   updatedSessionIds = new Set(),
 }) => {
-  const { isActivated } = useSession();
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   const handleStatusChange = async (sessionId: string, newStatus: string) => {
     if (!onStatusUpdate) return;
+    if (newStatus !== "active" && newStatus !== "complete") return;
     setUpdatingId(sessionId);
     try {
-      await onStatusUpdate(sessionId, newStatus);
+      await onStatusUpdate(sessionId, newStatus as "active" | "complete");
     } finally {
       setUpdatingId(null);
     }
@@ -96,9 +98,7 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({
                 )}
               >
                 <td>
-                  <Link
-                    href={`/session/${session?.id}`}
-                  >
+                  <Link href={`/session/${session?.id}`}>
                     <span className="text-sm font-bold text-black hover:underline underline-offset-4 cursor-pointer">
                       {session.contents?.title || "Unknown"}
                     </span>

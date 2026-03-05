@@ -9,6 +9,6 @@ export interface TrackedSession {
   id: string;
   content_id: string;
   created_at: string;
-  status: string;
+  status: "active" | "complete";
   contents: Content;
 }
