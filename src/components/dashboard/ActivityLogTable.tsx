@@ -6,12 +6,16 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { MdModeEdit } from "react-icons/md";
 import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
+
 import StatusSelector from "./StatusSelector";
 
 interface ActivityLogTableProps {
   sessions: TrackedSession[];
   loading: boolean;
   onStatusUpdate?: (id: string, status: string) => Promise<boolean>;
+  newSessionIds?: Set<string>;
+  updatedSessionIds?: Set<string>;
 }
 type Column = {
   label: string;
@@ -29,6 +33,8 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({
   sessions,
   loading,
   onStatusUpdate,
+  newSessionIds = new Set(),
+  updatedSessionIds = new Set(),
 }) => {
   const { isActivated } = useSession();
   const [updatingId, setUpdatingId] = useState<string | null>(null);
@@ -83,7 +89,11 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({
             sessions.map((session) => (
               <tr
                 key={session.id}
-                className="group w-full [&_td]:p-3 hover:bg-zinc-50/50 transition-colors"
+                className={cn(
+                  "group w-full [&_td]:p-3 hover:bg-zinc-50/50 transition-colors",
+                  newSessionIds.has(session.id) && "animate-row-enter",
+                  updatedSessionIds.has(session.id) && "delay-300 ease-in-out",
+                )}
               >
                 <td>
                   <Link

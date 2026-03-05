@@ -12,12 +12,14 @@ const HomePage: React.FC = () => {
     sessions,
     loading: sessionsLoading,
     updateStatus,
+    newSessionIds,
+    updatedSessionIds,
   } = useSessionUpdates();
 
   const totalLoading = contentsLoading || sessionsLoading;
 
   return (
-    <div className="max-w-5xl w-full [&>*]:py-8 divide-y divide-zinc-200">
+    <div className="max-w-5xl w-full *:py-8 divide-y divide-zinc-200">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight text-black">
@@ -46,6 +48,8 @@ const HomePage: React.FC = () => {
           sessions={sessions}
           loading={totalLoading}
           onStatusUpdate={updateStatus}
+          newSessionIds={newSessionIds}
+          updatedSessionIds={updatedSessionIds}
         />
       </DashboardSection>
     </div>

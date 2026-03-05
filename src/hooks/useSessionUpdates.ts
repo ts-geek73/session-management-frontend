@@ -6,6 +6,10 @@ import { TrackedSession } from "@/types";
 export const useSessionUpdates = () => {
   const [sessions, setSessions] = useState<TrackedSession[]>([]);
   const [loading, setLoading] = useState(true);
+  const [newSessionIds, setNewSessionIds] = useState<Set<string>>(new Set());
+  const [updatedSessionIds, setUpdatedSessionIds] = useState<Set<string>>(
+    new Set(),
+  );
 
   const fetchInitialSessions = useCallback(async () => {
     try {
@@ -31,12 +35,28 @@ export const useSessionUpdates = () => {
 
     socket.on("session_created", (newSession: TrackedSession) => {
       setSessions((prev) => [newSession, ...prev]);
+      setNewSessionIds((prev) => new Set(prev).add(newSession.id));
+      setTimeout(() => {
+        setNewSessionIds((prev) => {
+          const next = new Set(prev);
+          next.delete(newSession.id);
+          return next;
+        });
+      }, 3000);
     });
 
     socket.on("session_updated", (updatedSession: TrackedSession) => {
       setSessions((prev) =>
         prev.map((s) => (s.id === updatedSession.id ? updatedSession : s)),
       );
+      setUpdatedSessionIds((prev) => new Set(prev).add(updatedSession.id));
+      setTimeout(() => {
+        setUpdatedSessionIds((prev) => {
+          const next = new Set(prev);
+          next.delete(updatedSession.id);
+          return next;
+        });
+      }, 2000);
     });
 
     socket.on("disconnect", () => {
@@ -62,5 +82,5 @@ export const useSessionUpdates = () => {
     }
   };
 
-  return { sessions, loading, updateStatus };
+  return { sessions, loading, updateStatus, newSessionIds, updatedSessionIds };
 };
