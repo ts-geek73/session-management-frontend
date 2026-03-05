@@ -52,5 +52,15 @@ export const useSessionUpdates = () => {
     };
   }, [fetchInitialSessions]);
 
-  return { sessions, loading };
+  const updateStatus = async (id: string, status: string) => {
+    try {
+      const { data } = await api.patch(`/sessions/${id}`, { status });
+      return data.success;
+    } catch (err) {
+      console.error("Failed to update session status:", err);
+      return false;
+    }
+  };
+
+  return { sessions, loading, updateStatus };
 };

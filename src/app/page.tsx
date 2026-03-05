@@ -8,7 +8,11 @@ import { useContents, useSessionUpdates } from "@/hooks";
 
 const HomePage: React.FC = () => {
   const { contents, loading: contentsLoading } = useContents();
-  const { sessions, loading: sessionsLoading } = useSessionUpdates();
+  const {
+    sessions,
+    loading: sessionsLoading,
+    updateStatus,
+  } = useSessionUpdates();
 
   const totalLoading = contentsLoading || sessionsLoading;
 
@@ -38,7 +42,11 @@ const HomePage: React.FC = () => {
       </DashboardSection>
 
       <DashboardSection title="Activity Log" badgeCount={sessions.length}>
-        <ActivityLogTable sessions={sessions} loading={totalLoading} />
+        <ActivityLogTable
+          sessions={sessions}
+          loading={totalLoading}
+          onStatusUpdate={updateStatus}
+        />
       </DashboardSection>
     </div>
   );
